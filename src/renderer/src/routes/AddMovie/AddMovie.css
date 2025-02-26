@@ -1,0 +1,30 @@
+.AddMovieCheckbox {
+  margin-top: 20px;
+  color: white;
+}
+
+.AddMovieSubmit {
+  margin-bottom: 10px;
+}
+
+.AddMovieField {
+    margin-right: 15px;
+}
+
+.SubmitButtonContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.AddMovieForm {
+    padding: 20px;
+}
+
+.PageHeader {
+    color: white;
+    font-weight: bold;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    text-align: center;
+}
