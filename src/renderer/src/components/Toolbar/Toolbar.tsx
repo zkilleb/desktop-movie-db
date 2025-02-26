@@ -10,13 +10,13 @@ export function Toolbar() {
         <MuiToolbar className="Toolbar">
           <div>Movie Database</div>
           <div className="RightToolBarContainer">
-            <div className='AddIcon'>
-            <Link className="HomeLink" to="/add">
-            <AddCircleOutline/>
-            </Link>
+            <div className="AddIcon">
+              <Link className="HomeLink" to="/add">
+                <AddCircleOutline />
+              </Link>
             </div>
-            <div className='AddIcon'>
-            <Search />
+            <div className="AddIcon">
+              <Search />
             </div>
           </div>
         </MuiToolbar>

@@ -6,7 +6,7 @@ function App(): JSX.Element {
   return (
     <>
       <HashRouter>
-      <Toolbar />
+        <Toolbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/add" element={<AddMovie />} />
