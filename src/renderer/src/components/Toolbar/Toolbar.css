@@ -1,0 +1,17 @@
+.Toolbar {
+  background-color: #2c3440;
+  margin: 0px;
+  font-weight: bold;
+  display: flex;
+}
+
+.HeaderBox {
+  margin: 0px;
+  width: 100%;
+}
+
+.RightToolBarContainer {
+  padding-right: 10;
+  color: white;
+  margin-left: auto;
+}
