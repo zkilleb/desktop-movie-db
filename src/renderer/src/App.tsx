@@ -1,30 +1,17 @@
-import { useEffect, useState } from 'react';
-import { DBEmpty, Toolbar } from './components';
+import { HashRouter, Route, Routes } from 'react-router-dom';
+import { Toolbar } from './components';
+import { Home, AddMovie } from './routes';
 
 function App(): JSX.Element {
-  const [isEmpty, setIsEmpty] = useState();
-  // const addMovie = (): void =>
-  //   window.electron.ipcRenderer.send('add-movie', {
-  //     title: 'Test',
-  //     rating: 'R',
-  //     runtime: 127,
-  //     director: 'Steve Man',
-  //     releaseYear: 1994
-  //   });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await window.electron.ipcRenderer.invoke('is-movie-empty');
-      setIsEmpty(result);
-    };
-
-    fetchData();
-  }, []);
-
   return (
     <>
       <Toolbar />
-      {isEmpty && <DBEmpty />}
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/add" element={<AddMovie />} />
+        </Routes>
+      </HashRouter>
     </>
   );
 }
