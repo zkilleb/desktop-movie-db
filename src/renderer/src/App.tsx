@@ -5,8 +5,8 @@ import { Home, AddMovie } from './routes';
 function App(): JSX.Element {
   return (
     <>
-      <Toolbar />
       <HashRouter>
+      <Toolbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/add" element={<AddMovie />} />
