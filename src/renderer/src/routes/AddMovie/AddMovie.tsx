@@ -15,10 +15,16 @@ export function AddMovie() {
 
   return (
     <div>
-      <div className='PageHeader'>Add New Movie</div>
+      <div className="PageHeader">Add New Movie</div>
       <Paper elevation={1}>
-        <form className='AddMovieForm' noValidate autoComplete="off">
-          <TextField className="AddMovieField" label="Title" id="title" value={title} onChange={handleChange} />
+        <form className="AddMovieForm" noValidate autoComplete="off">
+          <TextField
+            className="AddMovieField"
+            label="Title"
+            id="title"
+            value={title}
+            onChange={handleChange}
+          />
           <TextField
             label="Runtime"
             id="length"
@@ -51,10 +57,10 @@ export function AddMovie() {
           <TextField label="Genre" id="genre" value={genre} onChange={handleChange} />
           <TextField label="Notes" id="notes" value={notes} onChange={handleChange} />
           <div className="SubmitButtonContainer">
-          <Button className="AddMovieSubmit" onClick={handleSubmit} variant="contained">
-          Submit
-        </Button>
-        </div>
+            <Button className="AddMovieSubmit" onClick={handleSubmit} variant="contained">
+              Submit
+            </Button>
+          </div>
         </form>
       </Paper>
     </div>
