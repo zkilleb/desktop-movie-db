@@ -18,44 +18,83 @@ export function AddMovie() {
       <div className="PageHeader">Add New Movie</div>
       <Paper elevation={1}>
         <form className="AddMovieForm" noValidate autoComplete="off">
-          <TextField
-            className="AddMovieField"
-            label="Title"
-            id="title"
-            value={title}
-            onChange={handleChange}
-          />
-          <TextField
-            label="Runtime"
-            id="length"
-            value={length}
-            onChange={handleChange}
-            helperText="In minutes"
-          />
-          <TextField
-            label="Release Year"
-            id="year"
-            value={year}
-            onChange={handleChange}
-            placeholder="YYYY"
-          />
-          <FormControlLabel
-            className="AddMovieCheckbox"
-            control={
-              <Checkbox
-                checked={color}
-                onChange={handleChange}
-                style={{ color: '#00b020' }}
-                id="color"
-              />
-            }
-            label="Color"
-          />
-          <TextField label="Language(s)" id="language" value={language} onChange={handleChange} />
-          <TextField label="Director" id="director" value={director} onChange={handleChange} />
-          <TextField label="Studio" id="studio" value={studio} onChange={handleChange} />
-          <TextField label="Genre" id="genre" value={genre} onChange={handleChange} />
-          <TextField label="Notes" id="notes" value={notes} onChange={handleChange} />
+          <div className="AddMovieFieldRow">
+            <TextField
+              className="AddMovieField"
+              label="Title"
+              id="title"
+              value={title}
+              onChange={handleChange}
+            />
+            <TextField
+              className="AddMovieField"
+              label="Runtime"
+              id="length"
+              value={length}
+              onChange={handleChange}
+              helperText="In minutes"
+            />
+            <TextField
+              className="AddMovieField"
+              label="Release Year"
+              id="year"
+              value={year}
+              onChange={handleChange}
+              placeholder="YYYY"
+            />
+            <FormControlLabel
+              className="AddMovieCheckbox"
+              control={
+                <Checkbox
+                  checked={color}
+                  onChange={handleChange}
+                  style={{ color: '#00b020' }}
+                  id="color"
+                />
+              }
+              label="Color"
+            />
+          </div>
+          <div className="AddMovieFieldRow">
+            <TextField
+              className="AddMovieField"
+              label="Language(s)"
+              id="language"
+              value={language}
+              onChange={handleChange}
+            />
+            <TextField
+              className="AddMovieField"
+              label="Director"
+              id="director"
+              value={director}
+              onChange={handleChange}
+            />
+            <TextField
+              className="AddMovieField"
+              label="Studio"
+              id="studio"
+              value={studio}
+              onChange={handleChange}
+            />
+            <TextField
+              className="AddMovieField"
+              label="Genre"
+              id="genre"
+              value={genre}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="AddMovieFieldRow">
+            <TextField
+              className="AddMovieField"
+              label="Notes"
+              id="notes"
+              value={notes}
+              onChange={handleChange}
+              multiline
+            />
+          </div>
           <div className="SubmitButtonContainer">
             <Button className="AddMovieSubmit" onClick={handleSubmit} variant="contained">
               Submit
