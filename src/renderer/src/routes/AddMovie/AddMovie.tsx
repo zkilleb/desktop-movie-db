@@ -1,6 +1,8 @@
 import './AddMovie.css';
 import React from 'react';
 import { Paper, Button, FormControlLabel, Checkbox, TextField } from '@mui/material';
+import { Notification } from '../../components';
+import { Validation } from '../../types/Validation';
 
 export function AddMovie() {
   const [title, setTitle] = React.useState<string>('');
@@ -13,99 +15,113 @@ export function AddMovie() {
   const [notes, setNotes] = React.useState<string>('');
   const [genre, setGenre] = React.useState<string>('');
 
+  const [open, setOpen] = React.useState(false);
+  const [validation, setValidation] = React.useState<Validation>();
+
   return (
-    <div>
-      <div className="PageHeader">Add New Movie</div>
-      <Paper elevation={1}>
-        <form className="AddMovieForm" noValidate autoComplete="off">
-          <div className="AddMovieFieldRow">
-            <TextField
-              className="AddMovieField"
-              label="Title"
-              id="title"
-              value={title}
-              onChange={handleChange}
-            />
-            <TextField
-              className="AddMovieField"
-              label="Runtime"
-              id="length"
-              value={length}
-              onChange={handleChange}
-              helperText="In minutes"
-            />
-            <TextField
-              className="AddMovieField"
-              label="Release Year"
-              id="year"
-              value={year}
-              onChange={handleChange}
-              placeholder="YYYY"
-            />
-            <FormControlLabel
-              className="AddMovieCheckbox"
-              control={
-                <Checkbox
-                  checked={color}
-                  onChange={handleChange}
-                  style={{ color: '#00b020' }}
-                  id="color"
-                />
-              }
-              label="Color"
-            />
-          </div>
-          <div className="AddMovieFieldRow">
-            <TextField
-              className="AddMovieField"
-              label="Language(s)"
-              id="language"
-              value={language}
-              onChange={handleChange}
-            />
-            <TextField
-              className="AddMovieField"
-              label="Director"
-              id="director"
-              value={director}
-              onChange={handleChange}
-            />
-            <TextField
-              className="AddMovieField"
-              label="Studio"
-              id="studio"
-              value={studio}
-              onChange={handleChange}
-            />
-            <TextField
-              className="AddMovieField"
-              label="Genre"
-              id="genre"
-              value={genre}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="AddMovieFieldRow">
-            <TextField
-              className="AddMovieField"
-              label="Notes"
-              id="notes"
-              value={notes}
-              onChange={handleChange}
-              multiline
-            />
-          </div>
-          <div className="SubmitButtonContainer">
-            <Button className="AddMovieSubmit" onClick={handleSubmit} variant="contained">
-              Submit
-            </Button>
-          </div>
-        </form>
-      </Paper>
-    </div>
+    <>
+      {validation && open && (
+        <Notification
+          message={validation.message}
+          severity={validation.severity}
+          open={!!validation}
+          handleClose={() => setOpen(false)}
+        />
+      )}
+      <div>
+        <div className="PageHeader">Add New Movie</div>
+        <Paper elevation={1}>
+          <form className="AddMovieForm" noValidate autoComplete="off">
+            <div className="AddMovieFieldRow">
+              <TextField
+                className="AddMovieField"
+                label="Title"
+                id="title"
+                value={title}
+                onChange={handleChange}
+              />
+              <TextField
+                className="AddMovieField"
+                label="Runtime"
+                id="length"
+                value={length}
+                onChange={handleChange}
+                helperText="In minutes"
+              />
+              <TextField
+                className="AddMovieField"
+                label="Release Year"
+                id="year"
+                value={year}
+                onChange={handleChange}
+                placeholder="YYYY"
+              />
+              <FormControlLabel
+                className="AddMovieCheckbox"
+                control={
+                  <Checkbox
+                    checked={color}
+                    onChange={handleChange}
+                    style={{ color: '#00b020' }}
+                    id="color"
+                  />
+                }
+                label="Color"
+              />
+            </div>
+            <div className="AddMovieFieldRow">
+              <TextField
+                className="AddMovieField"
+                label="Language(s)"
+                id="language"
+                value={language}
+                onChange={handleChange}
+              />
+              <TextField
+                className="AddMovieField"
+                label="Director"
+                id="director"
+                value={director}
+                onChange={handleChange}
+              />
+              <TextField
+                className="AddMovieField"
+                label="Studio"
+                id="studio"
+                value={studio}
+                onChange={handleChange}
+              />
+              <TextField
+                className="AddMovieField"
+                label="Genre"
+                id="genre"
+                value={genre}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="AddMovieFieldRow">
+              <TextField
+                className="AddMovieField"
+                label="Notes"
+                id="notes"
+                value={notes}
+                onChange={handleChange}
+                multiline
+              />
+            </div>
+            <div className="SubmitButtonContainer">
+              <Button className="AddMovieSubmit" onClick={handleSubmit} variant="contained">
+                Submit
+              </Button>
+            </div>
+          </form>
+        </Paper>
+      </div>
+    </>
   );
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setValidation(undefined);
     switch (event.target.id) {
       case 'title':
         setTitle(event.target.value);
@@ -137,7 +153,13 @@ export function AddMovie() {
     }
   }
 
-  async function handleSubmit() {}
+  async function handleSubmit() {
+    setValidation({
+      message: 'Title, director and year are required',
+      severity: 'error'
+    });
+    setOpen(true);
+  }
 }
 
 // const addMovie = (): void =>
