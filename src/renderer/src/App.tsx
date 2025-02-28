@@ -2,7 +2,7 @@ import { HashRouter, Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material';
 import { darkTheme } from './themes';
 import { Toolbar } from './components';
-import { Home, AddMovie } from './routes';
+import { Home, AddMovie, MovieList } from './routes';
 
 function App(): JSX.Element {
   return (
@@ -13,6 +13,7 @@ function App(): JSX.Element {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/add" element={<AddMovie />} />
+            <Route path="/movies" element={<MovieList />} />
           </Routes>
         </HashRouter>
       </ThemeProvider>

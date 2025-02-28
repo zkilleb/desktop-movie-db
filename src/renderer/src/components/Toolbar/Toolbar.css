@@ -17,6 +17,11 @@
   justify-content: center;
 }
 
+.LeftToolBarContainer {
+  margin-left: 5em;
+  font-weight: normal;
+}
+
 .AddIcon {
   width: 50%;
   margin: 0.5em;

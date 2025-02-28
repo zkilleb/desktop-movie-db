@@ -8,7 +8,14 @@ export function Toolbar() {
     <Box className="HeaderBox">
       <AppBar position="static">
         <MuiToolbar className="Toolbar">
-          <div>Movie Database</div>
+          <Link className="HomeLink" to="/">
+            <div>Movie Database</div>
+          </Link>
+          <div className="LeftToolBarContainer">
+            <Link className="HomeLink" to="/movies">
+              Movies
+            </Link>
+          </div>
           <div className="RightToolBarContainer">
             <div className="AddIcon">
               <Link className="HomeLink" to="/add">
