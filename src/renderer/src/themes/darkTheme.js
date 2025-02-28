@@ -14,7 +14,6 @@ export const darkTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: '#456',
-          width: '90%',
           margin: 'auto',
           borderRadius: '10px 10px 10px 10px'
         }
@@ -31,6 +30,7 @@ export const darkTheme = createTheme({
     MuiMenuItem: {
       styleOverrides: {
         root: {
+          backgroundColor: 'white',
           justifyContent: 'center'
         }
       }

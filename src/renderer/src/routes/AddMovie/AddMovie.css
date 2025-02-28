@@ -25,6 +25,10 @@
   padding: 20px;
 }
 
+.AddMovieFormWrapper {
+  width: 90% !important;
+}
+
 .PageHeader {
   color: white;
   font-weight: bold;
@@ -38,4 +42,8 @@
   width: 100%;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.RatingSelect {
+  width: 6em;
 }

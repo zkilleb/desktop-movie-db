@@ -85,7 +85,11 @@ app.whenReady().then(() => {
   initializeDB();
 });
 
-ipcMain.on('add-movie', (event, args) => addMovie(args));
+// ipcMain.on('add-movie', (event, args) => addMovie(args));
+ipcMain.handle('add-movie', async (event, args) => {
+  const result = await addMovie(args);
+  return result;
+});
 
 ipcMain.handle('is-movie-empty', async (event) => {
   const result = await movieDBEmptyCheck();

@@ -37,18 +37,28 @@ export function initializeDB() {
   db.close();
 }
 
-export function addMovie({
+export async function addMovie({
   title,
   director,
   releaseYear,
   runtime,
-  rating
+  rating,
+  color,
+  language,
+  studio,
+  genre,
+  notes
 }: {
   title: string;
   director: string;
   releaseYear: number;
   runtime: number;
   rating: Rating;
+  color: boolean;
+  language: string;
+  studio: string;
+  genre: string;
+  notes: string;
 }) {
   const db = openDB();
   db.serialize(() => {
@@ -56,7 +66,7 @@ export function addMovie({
     db.run(
       `INSERT INTO Movies (${MOVIE_SCHEMA.map((column) => {
         return column.name;
-      }).toString()}) VALUES ("${id}", "${title}", "${director}", ${releaseYear}, ${runtime}, "${rating}");`,
+      }).toString()}) VALUES ("${id}", "${title}", "${director}", ${releaseYear}, ${runtime}, "${rating}", ${color}, "${language}", "${studio}", "${genre}", "${notes}");`,
       (error) => {
         if (error) {
           console.log('ERROR: Problem adding record to DB');

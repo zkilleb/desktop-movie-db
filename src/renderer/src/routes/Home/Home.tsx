@@ -14,5 +14,5 @@ export function Home() {
     fetchData();
   }, []);
 
-  return <div>{isEmpty && <DBEmpty />}</div>;
+  return <div>{isEmpty ? <DBEmpty /> : <div>There is some data</div>}</div>;
 }
