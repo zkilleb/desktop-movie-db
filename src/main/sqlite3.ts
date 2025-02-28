@@ -61,8 +61,8 @@ export async function addMovie({
   notes: string;
 }) {
   const db = openDB();
-  db.serialize(() => {
-    const id = uuidv4();
+  const id = uuidv4();
+  const response = await new Promise((resolve, reject) => {
     db.run(
       `INSERT INTO Movies (${MOVIE_SCHEMA.map((column) => {
         return column.name;
@@ -71,13 +71,16 @@ export async function addMovie({
         if (error) {
           console.log('ERROR: Problem adding record to DB');
           console.log(`ERROR: ${error.message}`);
+          reject(error);
         } else {
           console.log(`SUCCESS: ${id} succesfully added to DB`);
+          resolve('success');
         }
       }
     );
   });
   db.close();
+  return response;
 }
 
 export async function movieDBEmptyCheck() {

@@ -7,11 +7,9 @@ import {
   Checkbox,
   TextField,
   Select,
-  SelectChangeEvent,
   MenuItem,
   InputLabel,
-  FormControl,
-  Box
+  FormControl
 } from '@mui/material';
 import { Notification } from '../../components';
 import { Validation, Rating } from '../../types';
@@ -121,19 +119,18 @@ export function AddMovie() {
                   id="rating"
                   className="RatingSelect"
                   label="Rating"
+                  value={rating}
                   onChange={(e) => setRating(e.target.value as string)}
                 >
-                  <div>
-                    {Object.values(Rating)
-                      .filter((value) => isNaN(Number(value)))
-                      .map((rating) => {
-                        return (
-                          <MenuItem key={rating} value={rating}>
-                            {rating}
-                          </MenuItem>
-                        );
-                      })}
-                  </div>
+                  {Object.values(Rating)
+                    .filter((value) => isNaN(Number(value)))
+                    .map((selectedRating) => {
+                      return (
+                        <MenuItem key={selectedRating} value={selectedRating}>
+                          {selectedRating}
+                        </MenuItem>
+                      );
+                    })}
                 </Select>
               </FormControl>
               <TextField
@@ -192,7 +189,7 @@ export function AddMovie() {
   async function handleSubmit() {
     if (title && director && releaseYear) {
       try {
-        const result = await window.electron.ipcRenderer.invoke('add-movie', {
+        await window.electron.ipcRenderer.invoke('add-movie', {
           title: title,
           rating: rating,
           runtime: runtime,
@@ -204,7 +201,11 @@ export function AddMovie() {
           genre: genre,
           notes: notes
         });
-        console.log(result);
+        setValidation({
+          message: 'Succesfully wrote movie to database',
+          severity: 'success'
+        });
+        setOpen(true);
       } catch (e) {
         setValidation({
           message: 'Problem writing movie to database',
