@@ -2,7 +2,14 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
-import { addMovie, deleteMovie, getAllMovies, initializeDB, movieDBEmptyCheck } from './sqlite3';
+import {
+  addMovie,
+  deleteMovie,
+  getAllMovies,
+  getMovieDetails,
+  initializeDB,
+  movieDBEmptyCheck
+} from './sqlite3';
 
 let mainWindow: BrowserWindow | null;
 
@@ -102,6 +109,11 @@ ipcMain.handle('delete-movie', async (event, args) => {
 
 ipcMain.handle('get-movies', async (event) => {
   const result = await getAllMovies();
+  return result;
+});
+
+ipcMain.handle('get-movie-details', async (event, args) => {
+  const result = await getMovieDetails(args);
   return result;
 });
 

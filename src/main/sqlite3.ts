@@ -112,10 +112,23 @@ export async function getAllMovies() {
 export async function deleteMovie({ id }: { id: string }) {
   const db = openDB();
   const response = await new Promise((resolve, reject) => {
-    db.all(`DELETE From Movies WHERE ID="${id}`, (err) => {
+    db.all(`DELETE FROM Movies WHERE ID="${id}"`, (err) => {
       if (err) {
         reject(err);
       }
+    });
+  });
+  db.close();
+  return response;
+}
+
+export async function getMovieDetails({ id }: { id: string }) {
+  const db = openDB();
+  const response = await new Promise((resolve, reject) => {
+    db.all(`SELECT * FROM Movies WHERE ID="${id}"`, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else resolve(rows);
     });
   });
   db.close();

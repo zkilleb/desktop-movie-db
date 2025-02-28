@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './MovieList.css';
+import { useNavigate } from 'react-router-dom';
 import {
   Table,
   TableBody,
@@ -13,6 +14,7 @@ import { Movie } from '../../types';
 
 export function MovieList() {
   const [movieList, setMovieList] = useState<Movie[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,7 +46,7 @@ export function MovieList() {
           <TableBody>
             {movieList.map((movie) => {
               return (
-                <TableRow key={movie.ID}>
+                <TableRow key={movie.ID} onDoubleClick={() => navigate(`/movie/${movie.ID}`)}>
                   <TableCell align="center">{movie.Title}</TableCell>
                   <TableCell align="center">{movie.Director}</TableCell>
                   <TableCell align="center">{movie.ReleaseYear}</TableCell>
