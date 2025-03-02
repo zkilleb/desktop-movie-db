@@ -10,6 +10,7 @@ import {
   initializeDB,
   movieDBEmptyCheck
 } from './sqlite3';
+import { updateUserConfig, getUserConfig } from './userConfig';
 
 let mainWindow: BrowserWindow | null;
 
@@ -97,7 +98,7 @@ ipcMain.handle('add-movie', async (event, args) => {
   return result;
 });
 
-ipcMain.handle('is-movie-empty', async (event) => {
+ipcMain.handle('is-movie-empty', async () => {
   const result = await movieDBEmptyCheck();
   return result;
 });
@@ -107,13 +108,23 @@ ipcMain.handle('delete-movie', async (event, args) => {
   return result;
 });
 
-ipcMain.handle('get-movies', async (event) => {
+ipcMain.handle('get-movies', async () => {
   const result = await getAllMovies();
   return result;
 });
 
 ipcMain.handle('get-movie-details', async (event, args) => {
   const result = await getMovieDetails(args);
+  return result;
+});
+
+ipcMain.handle('update-user-config', async (event, args) => {
+  const result = await updateUserConfig(args);
+  return result;
+});
+
+ipcMain.handle('get-user-config', async () => {
+  const result = await getUserConfig();
   return result;
 });
 
