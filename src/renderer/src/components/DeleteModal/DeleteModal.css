@@ -1,0 +1,13 @@
+.DeleteSubmit {
+  margin: 15px !important;
+}
+
+.DeleteCancel {
+  margin: 15px !important;
+}
+
+.WarningText {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+}

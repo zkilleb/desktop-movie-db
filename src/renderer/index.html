@@ -6,7 +6,9 @@
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:"
+      content="connect-src https://api.themoviedb.org/; default-src 'self';
+       script-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline';
+       font-src 'self' https://fonts.gstatic.com; img-src https://image.tmdb.org 'self' data:"
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

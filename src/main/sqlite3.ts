@@ -115,6 +115,8 @@ export async function deleteMovie({ id }: { id: string }) {
     db.all(`DELETE FROM Movies WHERE ID="${id}"`, (err) => {
       if (err) {
         reject(err);
+      } else {
+        resolve('success');
       }
     });
   });

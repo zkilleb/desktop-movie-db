@@ -1,3 +1,10 @@
 .MovieListTable {
   width: 95% !important;
 }
+
+.EmptyMovieList {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 10px;
+}

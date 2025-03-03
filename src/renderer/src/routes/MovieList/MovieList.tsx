@@ -44,21 +44,29 @@ export function MovieList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {movieList.map((movie) => {
-              return (
-                <TableRow key={movie.ID} onDoubleClick={() => navigate(`/movie/${movie.ID}`)}>
-                  <TableCell align="center">{movie.Title}</TableCell>
-                  <TableCell align="center">{movie.Director}</TableCell>
-                  <TableCell align="center">{movie.ReleaseYear}</TableCell>
-                  <TableCell align="center">{movie.Runtime}</TableCell>
-                  <TableCell align="center">{movie.Rating}</TableCell>
-                  <TableCell align="center">{movie.Color ? 'True' : 'False'}</TableCell>
-                  <TableCell align="center">{movie.Language}</TableCell>
-                  <TableCell align="center">{movie.Studio}</TableCell>
-                  <TableCell align="center">{movie.Genre}</TableCell>
-                </TableRow>
-              );
-            })}
+            {movieList.length > 0 ? (
+              movieList.map((movie) => {
+                return (
+                  <TableRow key={movie.ID} onDoubleClick={() => navigate(`/movie/${movie.ID}`)}>
+                    <TableCell align="center">{movie.Title}</TableCell>
+                    <TableCell align="center">{movie.Director}</TableCell>
+                    <TableCell align="center">{movie.ReleaseYear}</TableCell>
+                    <TableCell align="center">{movie.Runtime}</TableCell>
+                    <TableCell align="center">{movie.Rating}</TableCell>
+                    <TableCell align="center">{movie.Color ? 'True' : 'False'}</TableCell>
+                    <TableCell align="center">{movie.Language}</TableCell>
+                    <TableCell align="center">{movie.Studio}</TableCell>
+                    <TableCell align="center">{movie.Genre}</TableCell>
+                  </TableRow>
+                );
+              })
+            ) : (
+              <TableRow>
+                <TableCell colSpan={9}>
+                  <div className="EmptyMovieList">No movies currently in database.</div>
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>
