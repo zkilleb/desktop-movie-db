@@ -2,7 +2,7 @@ import { HashRouter, Route, Routes } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { ThemeProvider } from '@mui/material';
 import { darkTheme } from './themes';
-import { Toolbar, Notification } from './components';
+import { Toolbar, Notification, Footer } from './components';
 import { Validation } from './types';
 import { Home, AddMovie, MovieList, MovieDetail } from './routes';
 
@@ -52,6 +52,7 @@ function App(): JSX.Element {
           <Route path="/movies" element={<MovieList />} />
           <Route path="/movie/:id" element={<MovieDetail />} />
         </Routes>
+        <Footer />
       </HashRouter>
     </ThemeProvider>
   );

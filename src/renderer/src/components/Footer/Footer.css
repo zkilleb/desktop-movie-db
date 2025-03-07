@@ -1,0 +1,20 @@
+.TMDBLogo {
+  width: 1.5em;
+  height: 1.5em;
+  margin-right: 0.5em;
+  margin-left: 0.5em;
+}
+
+.FooterContainer {
+  padding-top: 0.5%;
+  padding-bottom: 0.5%;
+  display: flex;
+  color: white;
+  justify-content: center;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #2c3440;
+  width: 100%;
+}
