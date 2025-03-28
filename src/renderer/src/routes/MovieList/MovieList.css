@@ -3,6 +3,8 @@
 }
 
 .EmptyMovieList {
+  text-decoration: none;
+  color: white;
   display: flex;
   justify-content: center;
   text-align: center;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './MovieList.css';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Table,
   TableBody,
@@ -64,6 +64,9 @@ export function MovieList() {
               <TableRow>
                 <TableCell colSpan={9}>
                   <div className="EmptyMovieList">No movies currently in database.</div>
+                  <Link to="/add" className="EmptyMovieList">
+                    Click Here To Add One
+                  </Link>
                 </TableCell>
               </TableRow>
             )}
