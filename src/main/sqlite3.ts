@@ -66,7 +66,19 @@ export async function addMovie({
     db.run(
       `INSERT INTO Movies (${MOVIE_SCHEMA.map((column) => {
         return column.name;
-      }).toString()}) VALUES ("${id}", "${title}", "${director}", ${releaseYear}, ${runtime}, "${rating}", ${color}, "${language}", "${studio}", "${genre}", "${notes}");`,
+      }).toString()}) VALUES (
+        "${id}",
+        "${title}",
+        "${director}",
+        ${releaseYear},
+        ${prepareInsertValues(runtime)},
+        ${prepareInsertValues(rating)},
+        ${color},
+        ${prepareInsertValues(language)},
+        ${prepareInsertValues(studio)},
+        ${prepareInsertValues(genre)},
+        ${prepareInsertValues(notes)}
+        );`,
       (error) => {
         if (error) {
           console.log('ERROR: Problem adding record to DB');
@@ -74,7 +86,7 @@ export async function addMovie({
           reject(error);
         } else {
           console.log(`SUCCESS: ${id} succesfully added to DB`);
-          resolve('success');
+          resolve(id);
         }
       }
     );
@@ -82,6 +94,10 @@ export async function addMovie({
   db.close();
   return response;
 }
+
+const prepareInsertValues = (value: any) => {
+  return value ? `"${value}"` : 'NULL';
+};
 
 export async function movieDBEmptyCheck() {
   const db = openDB();

@@ -10,10 +10,15 @@ import {
   TableRow,
   Paper
 } from '@mui/material';
+import { Delete } from '@mui/icons-material';
 import { Movie } from '../../types';
+import { DeleteModal } from '@renderer/components';
 
 export function MovieList() {
   const [movieList, setMovieList] = useState<Movie[]>([]);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [tempDeleteId, setTempDeleteId] = useState<string>();
+  const [tempDeleteTitle, setTempDeleteTitle] = useState<string>();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,22 +30,43 @@ export function MovieList() {
     fetchData();
   }, []);
 
+  const handleDelete = (id: string, title: string) => {
+    setDeleteOpen(true);
+    setTempDeleteId(id);
+    setTempDeleteTitle(title);
+  };
+
+  const handleDeleteCallback = () => {
+    const filteredMovieList = [...movieList].filter((movie) => movie.ID !== tempDeleteId);
+    setMovieList(filteredMovieList);
+    setDeleteOpen(false);
+    setTempDeleteId(undefined);
+    setTempDeleteTitle(undefined);
+  };
+
   return (
     <>
+      {deleteOpen && tempDeleteId && tempDeleteTitle && (
+        <DeleteModal
+          id={tempDeleteId}
+          title={tempDeleteTitle}
+          open={deleteOpen}
+          handleCallback={handleDeleteCallback}
+          handleClose={() => {
+            setDeleteOpen(!deleteOpen);
+            setTempDeleteId(undefined);
+            setTempDeleteTitle(undefined);
+          }}
+        />
+      )}
       <div className="PageHeader">Movie List</div>
       <TableContainer className="MovieListTable" component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell align="center">Title</TableCell>
-              <TableCell align="center">Director</TableCell>
-              <TableCell align="center">Release Year</TableCell>
-              <TableCell align="center">Runtime</TableCell>
-              <TableCell align="center">Rating</TableCell>
-              <TableCell align="center">Color</TableCell>
-              <TableCell align="center">Language</TableCell>
-              <TableCell align="center">Studio</TableCell>
-              <TableCell align="center">Genre</TableCell>
+              {COLUMN_TITLES.map((column) => {
+                return <TableCell align="center">{column}</TableCell>;
+              })}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -57,6 +83,12 @@ export function MovieList() {
                     <TableCell align="center">{movie.Language}</TableCell>
                     <TableCell align="center">{movie.Studio}</TableCell>
                     <TableCell align="center">{movie.Genre}</TableCell>
+                    <TableCell align="center">
+                      <Delete
+                        className="DeleteButton"
+                        onClick={() => handleDelete(movie.ID, movie.Title)}
+                      />
+                    </TableCell>
                   </TableRow>
                 );
               })
@@ -76,3 +108,16 @@ export function MovieList() {
     </>
   );
 }
+
+const COLUMN_TITLES = [
+  'Title',
+  'Director',
+  'Release Year',
+  'Runtime',
+  'Rating',
+  'Color',
+  'Language',
+  'Studio',
+  'Genre',
+  ''
+];

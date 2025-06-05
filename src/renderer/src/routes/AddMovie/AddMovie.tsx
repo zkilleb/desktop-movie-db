@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { Notification } from '../../components';
 import { Validation, Rating } from '../../types';
+import { useNavigate } from 'react-router-dom';
 
 export function AddMovie() {
   const [title, setTitle] = React.useState<string>();
@@ -25,9 +26,24 @@ export function AddMovie() {
   const [notes, setNotes] = React.useState<string>();
   const [genre, setGenre] = React.useState<string>();
   const [rating, setRating] = React.useState<string>();
+  const [addAnotherMovie, setAddAnotherMovie] = React.useState<boolean>(false);
 
   const [open, setOpen] = React.useState(false);
   const [validation, setValidation] = React.useState<Validation>();
+  const navigate = useNavigate();
+
+  const clearTextFields = () => {
+    setTitle('');
+    setRuntime('');
+    setReleaseYear('');
+    setColor(true);
+    setLanguage('');
+    setDirector('');
+    setStudio('');
+    setNotes('');
+    setGenre('');
+    setRating('');
+  };
 
   return (
     <>
@@ -46,9 +62,9 @@ export function AddMovie() {
             <div className="AddMovieFieldRow">
               <TextField
                 className="AddMovieField"
-                label="Title"
+                label="Title *"
                 id="title"
-                value={title}
+                value={title ? title : ''}
                 onChange={handleChange}
               />
               <TextField
@@ -56,16 +72,16 @@ export function AddMovie() {
                 label="Runtime"
                 type="number"
                 id="runtime"
-                value={runtime}
+                value={runtime ? runtime : ''}
                 onChange={handleChange}
                 helperText="In minutes"
               />
               <TextField
                 className="AddMovieField"
                 type="number"
-                label="Release Year"
+                label="Release Year *"
                 id="releaseYear"
-                value={releaseYear}
+                value={releaseYear ? releaseYear : ''}
                 onChange={handleChange}
                 placeholder="YYYY"
               />
@@ -87,28 +103,28 @@ export function AddMovie() {
                 className="AddMovieField"
                 label="Language(s)"
                 id="language"
-                value={language}
+                value={language ? language : ''}
                 onChange={handleChange}
               />
               <TextField
                 className="AddMovieField"
-                label="Director"
+                label="Director *"
                 id="director"
-                value={director}
+                value={director ? director : ''}
                 onChange={handleChange}
               />
               <TextField
                 className="AddMovieField"
                 label="Studio"
                 id="studio"
-                value={studio}
+                value={studio ? studio : ''}
                 onChange={handleChange}
               />
               <TextField
                 className="AddMovieField"
                 label="Genre"
                 id="genre"
-                value={genre}
+                value={genre ? genre : ''}
                 onChange={handleChange}
               />
             </div>
@@ -119,7 +135,7 @@ export function AddMovie() {
                   id="rating"
                   className="RatingSelect"
                   label="Rating"
-                  value={rating}
+                  value={rating ? rating : ''}
                   onChange={(e) => setRating(e.target.value as string)}
                 >
                   {Object.values(Rating)
@@ -137,7 +153,7 @@ export function AddMovie() {
                 className="AddMovieField"
                 label="Notes"
                 id="notes"
-                value={notes}
+                value={notes ? notes : ''}
                 onChange={handleChange}
                 multiline
               />
@@ -146,6 +162,18 @@ export function AddMovie() {
               <Button className="AddMovieSubmit" onClick={handleSubmit} variant="contained">
                 Submit
               </Button>
+            </div>
+            <div className="SubmitButtonContainer">
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    onChange={() => setAddAnotherMovie(!addAnotherMovie)}
+                    style={{ color: '#00b020' }}
+                    value={addAnotherMovie}
+                  />
+                }
+                label="Add Another Movie"
+              />
             </div>
           </form>
         </Paper>
@@ -189,7 +217,7 @@ export function AddMovie() {
   async function handleSubmit() {
     if (title && director && releaseYear) {
       try {
-        await window.electron.ipcRenderer.invoke('add-movie', {
+        const response = await window.electron.ipcRenderer.invoke('add-movie', {
           title: title,
           rating: rating,
           runtime: runtime,
@@ -201,11 +229,16 @@ export function AddMovie() {
           genre: genre,
           notes: notes
         });
-        setValidation({
-          message: 'Succesfully wrote movie to database',
-          severity: 'success'
-        });
-        setOpen(true);
+        if (addAnotherMovie) {
+          setValidation({
+            message: 'Succesfully wrote movie to database',
+            severity: 'success'
+          });
+          setOpen(true);
+          clearTextFields();
+        } else {
+          navigate(`/movie/${response}`);
+        }
       } catch (e) {
         setValidation({
           message: 'Problem writing movie to database',

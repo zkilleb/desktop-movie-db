@@ -9,12 +9,14 @@ export function DeleteModal({
   title,
   id,
   handleClose,
-  open
+  open,
+  handleCallback
 }: {
   title: string;
   id: string;
   handleClose: () => void;
   open: boolean;
+  handleCallback?: () => void;
 }) {
   const [validation, setValidation] = useState<Validation>();
   const [validationOpen, setValidationOpen] = useState(false);
@@ -24,6 +26,9 @@ export function DeleteModal({
     try {
       await window.electron.ipcRenderer.invoke('delete-movie', { id });
       navigate('/movies');
+      if (handleCallback) {
+        handleCallback();
+      }
     } catch (e) {
       setValidation({ message: 'Problem deleting movie', severity: 'error' });
       setValidationOpen(true);

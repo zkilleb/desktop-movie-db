@@ -70,7 +70,7 @@ export function SettingsModal({ handleClose, open }: { handleClose: () => void; 
                       <>
                         API key for TMDB. Used to collect posters and other movie details. Can be
                         registered for below: <br />
-                        https://developer.themoviedb.org/reference/intro/getting-started"
+                        https://developer.themoviedb.org/reference/intro/getting-started
                       </>
                     }
                   >
