@@ -10,13 +10,15 @@ import {
   TableRow,
   Paper
 } from '@mui/material';
-import { Delete } from '@mui/icons-material';
+import { Delete, FilterAlt } from '@mui/icons-material';
 import { Movie } from '../../types';
 import { DeleteModal } from '@renderer/components';
+import { FilterModal } from '@renderer/components/FilterModal/FilterModal';
 
 export function MovieList() {
   const [movieList, setMovieList] = useState<Movie[]>([]);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
   const [tempDeleteId, setTempDeleteId] = useState<string>();
   const [tempDeleteTitle, setTempDeleteTitle] = useState<string>();
   const navigate = useNavigate();
@@ -44,8 +46,18 @@ export function MovieList() {
     setTempDeleteTitle(undefined);
   };
 
+  const handleFilter = () => {};
+
   return (
     <>
+      {filterOpen && (
+        <FilterModal
+          open={filterOpen}
+          handleFilterSubmit={handleFilter}
+          handleClose={() => setFilterOpen(!filterOpen)}
+          movieList={movieList}
+        />
+      )}
       {deleteOpen && tempDeleteId && tempDeleteTitle && (
         <DeleteModal
           id={tempDeleteId}
@@ -61,6 +73,11 @@ export function MovieList() {
       )}
       <div className="PageHeader">Movie List</div>
       <TableContainer className="MovieListTable" component={Paper}>
+        {movieList.length > 0 && (
+          <div className="FilterSubHeader">
+            <FilterAlt onClick={() => setFilterOpen(!filterOpen)} />
+          </div>
+        )}
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -94,7 +111,7 @@ export function MovieList() {
               })
             ) : (
               <TableRow>
-                <TableCell colSpan={9}>
+                <TableCell colSpan={10}>
                   <div className="EmptyMovieList">No movies currently in database.</div>
                   <Link to="/add" className="EmptyMovieList">
                     Click Here To Add One

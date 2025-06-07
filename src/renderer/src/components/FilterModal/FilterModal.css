@@ -1,0 +1,13 @@
+.FilterFieldRow {
+  display: flex;
+  width: 90%;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ColorFilterHeader {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  text-decoration: underline;
+}

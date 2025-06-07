@@ -9,11 +9,14 @@ import {
   Select,
   MenuItem,
   InputLabel,
-  FormControl
+  FormControl,
+  Tooltip,
+  InputAdornment
 } from '@mui/material';
 import { Notification } from '../../components';
 import { Validation, Rating } from '../../types';
 import { useNavigate } from 'react-router-dom';
+import { HelpOutline } from '@mui/icons-material';
 
 export function AddMovie() {
   const [title, setTitle] = React.useState<string>();
@@ -105,6 +108,24 @@ export function AddMovie() {
                 id="language"
                 value={language ? language : ''}
                 onChange={handleChange}
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <Tooltip
+                        title={
+                          <>
+                            For proper application behavior, please seperate muiltiple languages
+                            with a comma, e.g., English, Spanish
+                          </>
+                        }
+                      >
+                        <InputAdornment position="end">
+                          <HelpOutline />
+                        </InputAdornment>
+                      </Tooltip>
+                    )
+                  }
+                }}
               />
               <TextField
                 className="AddMovieField"
@@ -122,10 +143,28 @@ export function AddMovie() {
               />
               <TextField
                 className="AddMovieField"
-                label="Genre"
+                label="Genre(s)"
                 id="genre"
                 value={genre ? genre : ''}
                 onChange={handleChange}
+                slotProps={{
+                  input: {
+                    endAdornment: (
+                      <Tooltip
+                        title={
+                          <>
+                            For proper application behavior, please seperate muiltiple genres with a
+                            comma, e.g., Horror, Comedy
+                          </>
+                        }
+                      >
+                        <InputAdornment position="end">
+                          <HelpOutline />
+                        </InputAdornment>
+                      </Tooltip>
+                    )
+                  }
+                }}
               />
             </div>
             <div className="AddMovieFieldRow">
