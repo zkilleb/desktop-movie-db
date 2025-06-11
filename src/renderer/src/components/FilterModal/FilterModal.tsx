@@ -10,9 +10,11 @@ import {
   Radio,
   FormControlLabel,
   InputAdornment,
-  Tooltip
+  Tooltip,
+  Select,
+  MenuItem
 } from '@mui/material';
-import { Movie } from '@renderer/types';
+import { Movie, Rating } from '@renderer/types';
 import { useState } from 'react';
 import { RangeSlider } from '../RangeSlider/RangeSlider';
 import { HelpOutline } from '@mui/icons-material';
@@ -25,17 +27,44 @@ export function FilterModal({
 }: {
   open: boolean;
   handleClose: () => void;
-  handleFilterSubmit: () => void;
+  handleFilterSubmit: (params: {
+    title?: string;
+    genre?: string;
+    color?: string;
+    studio?: string;
+    language?: string;
+    director?: string;
+    rating?: string;
+    releaseYear?: number[];
+    runtime?: number[];
+    releaseYearMarks?:
+      | false
+      | {
+          value: number;
+          label: number;
+        }[];
+    runtimeMarks?:
+      | false
+      | {
+          value: number;
+          label: string;
+        }[];
+  }) => void;
   movieList: Movie[];
 }) {
-  const sortedByReleaseYearMovies = movieList.sort((x, y) => x?.ReleaseYear - y?.ReleaseYear);
-  const sortedByRuntimeMovies = movieList.sort((x, y) => x?.Runtime - y?.Runtime);
+  const sortedByReleaseYearMovies = movieList
+    .sort((x, y) => x?.ReleaseYear - y?.ReleaseYear)
+    .filter((movie) => movie.ReleaseYear);
+  const sortedByRuntimeMovies = movieList
+    .sort((x, y) => x?.Runtime - y?.Runtime)
+    .filter((movie) => movie.Runtime);
   const [title, setTitle] = useState<string>();
   const [genre, setGenre] = useState<string>();
   const [studio, setStudio] = useState<string>();
   const [language, setLanguage] = useState<string>();
   const [color, setColor] = useState<string>('both');
   const [director, setDirector] = useState<string>();
+  const [rating, setRating] = useState<string>();
   const [releaseYear, setReleaseYear] = useState<number[]>([
     sortedByReleaseYearMovies.length > 0 ? sortedByReleaseYearMovies[0].ReleaseYear : 0,
     sortedByReleaseYearMovies.length > 0
@@ -155,6 +184,30 @@ export function FilterModal({
               }
             }}
           />
+          <div>
+            <div className="ColorFilterHeader">Rating</div>
+            <Select
+              id="rating"
+              className="RatingSelect"
+              label="Rating"
+              value={rating ? rating : ''}
+              onChange={(e) => setRating(e.target.value as string)}
+              displayEmpty
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              {Object.values(Rating)
+                .filter((value) => isNaN(Number(value)))
+                .map((selectedRating) => {
+                  return (
+                    <MenuItem key={selectedRating} value={selectedRating}>
+                      {selectedRating}
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+          </div>
         </div>
         <div className="AddMovieFieldRow">
           <div className="ColorFilterHeader">Color</div>
@@ -222,7 +275,25 @@ export function FilterModal({
         <Button className="DeleteCancel" onClick={handleClose} variant="contained">
           Cancel
         </Button>
-        <Button className="DeleteSubmit" onClick={handleFilterSubmit} variant="contained">
+        <Button
+          className="DeleteSubmit"
+          onClick={() =>
+            handleFilterSubmit({
+              title,
+              genre,
+              color,
+              studio,
+              language,
+              director,
+              rating,
+              releaseYear,
+              runtime,
+              releaseYearMarks,
+              runtimeMarks
+            })
+          }
+          variant="contained"
+        >
           Submit
         </Button>
       </DialogActions>
@@ -252,7 +323,7 @@ export function FilterModal({
     setDirector('');
     setStudio('');
     setGenre('');
-    // setRating('');
+    setRating('');
   }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {

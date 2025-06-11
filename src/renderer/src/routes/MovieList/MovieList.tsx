@@ -8,7 +8,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper
+  Paper,
+  Chip
 } from '@mui/material';
 import { Delete, FilterAlt } from '@mui/icons-material';
 import { Movie } from '../../types';
@@ -21,6 +22,7 @@ export function MovieList() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [tempDeleteId, setTempDeleteId] = useState<string>();
   const [tempDeleteTitle, setTempDeleteTitle] = useState<string>();
+  const [filters, setFilters] = useState<string[]>();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,7 +48,92 @@ export function MovieList() {
     setTempDeleteTitle(undefined);
   };
 
-  const handleFilter = () => {};
+  const handleFilter = (params: {
+    title?: string;
+    genre?: string;
+    color?: string;
+    studio?: string;
+    language?: string;
+    director?: string;
+    rating?: string;
+    releaseYear?: number[];
+    runtime?: number[];
+    releaseYearMarks?:
+      | false
+      | {
+          value: number;
+          label: number;
+        }[];
+    runtimeMarks?:
+      | false
+      | {
+          value: number;
+          label: string;
+        }[];
+  }) => {
+    setFilterOpen(false);
+    const currentFilters: string[] = [];
+    Object.keys(params).forEach((filter) => {
+      switch (filter) {
+        case 'title':
+          if (params[filter]) {
+            currentFilters.push(`Title: ${params[filter]}`);
+          }
+          break;
+        case 'genre':
+          if (params[filter]) {
+            currentFilters.push(`Genre(s): ${params[filter]}`);
+          }
+          break;
+        case 'color':
+          if (params[filter] !== 'both') {
+            currentFilters.push(`Color: ${params[filter] === 'bw' ? 'Black & White' : 'Color'}`);
+          }
+          break;
+        case 'studio':
+          if (params[filter]) {
+            currentFilters.push(`Studio: ${params[filter]}`);
+          }
+          break;
+        case 'language':
+          if (params[filter]) {
+            currentFilters.push(`Language(s): ${params[filter]}`);
+          }
+          break;
+        case 'director':
+          if (params[filter]) {
+            currentFilters.push(`Director: ${params[filter]}`);
+          }
+          break;
+        case 'rating':
+          if (params[filter]) {
+            currentFilters.push(`Rating: ${params[filter]}`);
+          }
+          break;
+        case 'releaseYear':
+          if (
+            params[filter] &&
+            params.releaseYearMarks &&
+            (params[filter][0] !== params.releaseYearMarks[0].value ||
+              params[filter][1] !== params.releaseYearMarks[1].value)
+          ) {
+            currentFilters.push(`Release Year: ${params[filter][0]}-${params[filter][1]}`);
+          }
+          break;
+        case 'runtime':
+          if (
+            params[filter] &&
+            params.runtimeMarks &&
+            (params[filter][0] !== params.runtimeMarks[0].value ||
+              params[filter][1] !== params.runtimeMarks[1].value)
+          ) {
+            currentFilters.push(`Runtime: ${params[filter][0]}-${params[filter][1]} mins.`);
+          }
+          break;
+      }
+    });
+    setFilters(currentFilters);
+  };
 
   return (
     <>
@@ -73,6 +160,11 @@ export function MovieList() {
       )}
       <div className="PageHeader">Movie List</div>
       <TableContainer className="MovieListTable" component={Paper}>
+        {filters &&
+          filters.length > 0 &&
+          filters.map((filter) => {
+            return <Chip label={filter} />;
+          })}
         {movieList.length > 0 && (
           <div className="FilterSubHeader">
             <FilterAlt onClick={() => setFilterOpen(!filterOpen)} />
