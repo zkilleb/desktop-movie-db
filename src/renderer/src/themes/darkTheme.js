@@ -118,6 +118,16 @@ export const darkTheme = createTheme({
           color: 'black'
         }
       }
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: {
+          background: '#2c3440',
+          color: 'white',
+          border: '2px solid white',
+          fontWeight: 'bold'
+        }
+      }
     }
   }
 });

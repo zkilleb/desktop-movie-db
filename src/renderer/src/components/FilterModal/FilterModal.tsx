@@ -14,7 +14,7 @@ import {
   Select,
   MenuItem
 } from '@mui/material';
-import { Movie, Rating } from '@renderer/types';
+import { FilterParams, Movie, Rating } from '@renderer/types';
 import { useState } from 'react';
 import { RangeSlider } from '../RangeSlider/RangeSlider';
 import { HelpOutline } from '@mui/icons-material';
@@ -27,29 +27,7 @@ export function FilterModal({
 }: {
   open: boolean;
   handleClose: () => void;
-  handleFilterSubmit: (params: {
-    title?: string;
-    genre?: string;
-    color?: string;
-    studio?: string;
-    language?: string;
-    director?: string;
-    rating?: string;
-    releaseYear?: number[];
-    runtime?: number[];
-    releaseYearMarks?:
-      | false
-      | {
-          value: number;
-          label: number;
-        }[];
-    runtimeMarks?:
-      | false
-      | {
-          value: number;
-          label: string;
-        }[];
-  }) => void;
+  handleFilterSubmit: (params: FilterParams) => void;
   movieList: Movie[];
 }) {
   const sortedByReleaseYearMovies = movieList

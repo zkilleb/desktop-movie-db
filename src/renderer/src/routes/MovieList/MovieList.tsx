@@ -12,23 +12,26 @@ import {
   Chip
 } from '@mui/material';
 import { Delete, FilterAlt } from '@mui/icons-material';
-import { Movie } from '../../types';
+import { FilterParams, Movie } from '../../types';
 import { DeleteModal } from '@renderer/components';
 import { FilterModal } from '@renderer/components/FilterModal/FilterModal';
 
 export function MovieList() {
   const [movieList, setMovieList] = useState<Movie[]>([]);
+  const [filterdList, setFilteredList] = useState<Movie[]>(movieList);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [tempDeleteId, setTempDeleteId] = useState<string>();
   const [tempDeleteTitle, setTempDeleteTitle] = useState<string>();
-  const [filters, setFilters] = useState<string[]>();
+  const [filterParams, setFilterParams] = useState<FilterParams>();
+  const [filterPills, setFilterPills] = useState<{ value: string; field: string }[]>();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       const result = await window.electron.ipcRenderer.invoke('get-movies');
       setMovieList(result);
+      setFilteredList(result);
     };
 
     fetchData();
@@ -42,72 +45,64 @@ export function MovieList() {
 
   const handleDeleteCallback = () => {
     const filteredMovieList = [...movieList].filter((movie) => movie.ID !== tempDeleteId);
-    setMovieList(filteredMovieList);
+    setFilteredList(filteredMovieList);
     setDeleteOpen(false);
     setTempDeleteId(undefined);
     setTempDeleteTitle(undefined);
   };
 
-  const handleFilter = (params: {
-    title?: string;
-    genre?: string;
-    color?: string;
-    studio?: string;
-    language?: string;
-    director?: string;
-    rating?: string;
-    releaseYear?: number[];
-    runtime?: number[];
-    releaseYearMarks?:
-      | false
-      | {
-          value: number;
-          label: number;
-        }[];
-    runtimeMarks?:
-      | false
-      | {
-          value: number;
-          label: string;
-        }[];
-  }) => {
+  const handleFilter = (params: FilterParams) => {
+    setFilterParams(params);
     setFilterOpen(false);
-    const currentFilters: string[] = [];
+    const currentFilterPills: { value: string; field: string }[] = [];
+    let filteredMovieList = [...movieList];
     Object.keys(params).forEach((filter) => {
       switch (filter) {
         case 'title':
           if (params[filter]) {
-            currentFilters.push(`Title: ${params[filter]}`);
+            currentFilterPills.push({ value: `Title: ${params[filter]}`, field: filter });
+            filteredMovieList = filteredMovieList.filter((movie) => {
+              return movie.Title.toLowerCase().includes(params[filter]?.toLowerCase() || '');
+            });
           }
           break;
         case 'genre':
           if (params[filter]) {
-            currentFilters.push(`Genre(s): ${params[filter]}`);
+            currentFilterPills.push({ value: `Genre(s): ${params[filter]}`, field: filter });
+            filteredMovieList = filteredMovieList.filter((movie) => {
+              return (
+                movie.Genre &&
+                params[filter]?.split(',').some((el) => movie.Genre.includes(el.trim()))
+              );
+            });
           }
           break;
         case 'color':
           if (params[filter] !== 'both') {
-            currentFilters.push(`Color: ${params[filter] === 'bw' ? 'Black & White' : 'Color'}`);
+            currentFilterPills.push({
+              value: `Color: ${params[filter] === 'bw' ? 'Black & White' : 'Color'}`,
+              field: filter
+            });
           }
           break;
         case 'studio':
           if (params[filter]) {
-            currentFilters.push(`Studio: ${params[filter]}`);
+            currentFilterPills.push({ value: `Studio: ${params[filter]}`, field: filter });
           }
           break;
         case 'language':
           if (params[filter]) {
-            currentFilters.push(`Language(s): ${params[filter]}`);
+            currentFilterPills.push({ value: `Language(s): ${params[filter]}`, field: filter });
           }
           break;
         case 'director':
           if (params[filter]) {
-            currentFilters.push(`Director: ${params[filter]}`);
+            currentFilterPills.push({ value: `Director: ${params[filter]}`, field: filter });
           }
           break;
         case 'rating':
           if (params[filter]) {
-            currentFilters.push(`Rating: ${params[filter]}`);
+            currentFilterPills.push({ value: `Rating: ${params[filter]}`, field: filter });
           }
           break;
         case 'releaseYear':
@@ -117,7 +112,10 @@ export function MovieList() {
             (params[filter][0] !== params.releaseYearMarks[0].value ||
               params[filter][1] !== params.releaseYearMarks[1].value)
           ) {
-            currentFilters.push(`Release Year: ${params[filter][0]}-${params[filter][1]}`);
+            currentFilterPills.push({
+              value: `Release Year: ${params[filter][0]}-${params[filter][1]}`,
+              field: filter
+            });
           }
           break;
         case 'runtime':
@@ -127,12 +125,27 @@ export function MovieList() {
             (params[filter][0] !== params.runtimeMarks[0].value ||
               params[filter][1] !== params.runtimeMarks[1].value)
           ) {
-            currentFilters.push(`Runtime: ${params[filter][0]}-${params[filter][1]} mins.`);
+            currentFilterPills.push({
+              value: `Runtime: ${params[filter][0]}-${params[filter][1]} mins.`,
+              field: filter
+            });
           }
           break;
       }
     });
-    setFilters(currentFilters);
+    setFilterPills(currentFilterPills);
+    setFilteredList(filteredMovieList);
+  };
+
+  const handleFilterDelete = (filter: { value: string; field: string }) => {
+    if (filterPills && filterParams) {
+      let tempFilters = [...filterPills];
+      const filteredArr = tempFilters.filter((tempFilter) => tempFilter.value !== filter.value);
+      const tempParams = JSON.parse(JSON.stringify(filterParams));
+      tempParams[filter.field] = undefined;
+      handleFilter(tempParams);
+      setFilterPills(filteredArr);
+    }
   };
 
   return (
@@ -160,16 +173,27 @@ export function MovieList() {
       )}
       <div className="PageHeader">Movie List</div>
       <TableContainer className="MovieListTable" component={Paper}>
-        {filters &&
-          filters.length > 0 &&
-          filters.map((filter) => {
-            return <Chip label={filter} />;
-          })}
-        {movieList.length > 0 && (
-          <div className="FilterSubHeader">
-            <FilterAlt onClick={() => setFilterOpen(!filterOpen)} />
+        <div className="FilterContainer">
+          <div className="FilterPillContainer">
+            {filterPills &&
+              filterPills.length > 0 &&
+              filterPills.map((filter) => {
+                return (
+                  <Chip
+                    className="FilterChip"
+                    variant="outlined"
+                    onDelete={() => handleFilterDelete(filter)}
+                    label={filter.value}
+                  />
+                );
+              })}
           </div>
-        )}
+          {movieList.length > 0 && (
+            <div className="FilterSubHeader">
+              <FilterAlt onClick={() => setFilterOpen(!filterOpen)} />
+            </div>
+          )}
+        </div>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -179,8 +203,8 @@ export function MovieList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {movieList.length > 0 ? (
-              movieList.map((movie) => {
+            {filterdList.length > 0 ? (
+              filterdList.map((movie) => {
                 return (
                   <TableRow key={movie.ID} onDoubleClick={() => navigate(`/movie/${movie.ID}`)}>
                     <TableCell align="center">{movie.Title}</TableCell>

@@ -19,3 +19,13 @@
   display: flex;
   justify-content: right;
 }
+
+.FilterChip {
+  margin-top: 10px !important;
+  margin-left: 3px !important;
+  margin-right: 3px !important;
+}
+
+.FilterContainer {
+  display: flex;
+}
