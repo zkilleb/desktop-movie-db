@@ -72,7 +72,9 @@ export function MovieList() {
             filteredMovieList = filteredMovieList.filter((movie) => {
               return (
                 movie.Genre &&
-                params[filter]?.split(',').some((el) => movie.Genre.includes(el.trim()))
+                params[filter]
+                  ?.split(',')
+                  .some((el) => movie.Genre.toLowerCase().includes(el.toLowerCase().trim()))
               );
             });
           }
