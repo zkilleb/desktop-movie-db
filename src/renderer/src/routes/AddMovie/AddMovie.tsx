@@ -114,8 +114,8 @@ export function AddMovie() {
                       <Tooltip
                         title={
                           <>
-                            For proper application behavior, please seperate muiltiple languages
-                            with a comma, e.g., English, Spanish
+                            For proper application behavior, please seperate multiple languages with
+                            a comma, e.g., English, Spanish
                           </>
                         }
                       >
@@ -153,7 +153,7 @@ export function AddMovie() {
                       <Tooltip
                         title={
                           <>
-                            For proper application behavior, please seperate muiltiple genres with a
+                            For proper application behavior, please seperate multiple genres with a
                             comma, e.g., Horror, Comedy
                           </>
                         }

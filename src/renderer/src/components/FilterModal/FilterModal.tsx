@@ -23,12 +23,14 @@ export function FilterModal({
   open,
   handleClose,
   handleFilterSubmit,
-  movieList
+  movieList,
+  filterParams
 }: {
   open: boolean;
   handleClose: () => void;
   handleFilterSubmit: (params: FilterParams) => void;
   movieList: Movie[];
+  filterParams?: FilterParams;
 }) {
   const sortedByReleaseYearMovies = movieList
     .sort((x, y) => x?.ReleaseYear - y?.ReleaseYear)
@@ -36,24 +38,50 @@ export function FilterModal({
   const sortedByRuntimeMovies = movieList
     .sort((x, y) => x?.Runtime - y?.Runtime)
     .filter((movie) => movie.Runtime);
-  const [title, setTitle] = useState<string>();
-  const [genre, setGenre] = useState<string>();
-  const [studio, setStudio] = useState<string>();
-  const [language, setLanguage] = useState<string>();
-  const [color, setColor] = useState<string>('both');
-  const [director, setDirector] = useState<string>();
-  const [rating, setRating] = useState<string>();
+  const [title, setTitle] = useState<string | undefined>(
+    filterParams && filterParams.title ? filterParams.title : undefined
+  );
+  const [genre, setGenre] = useState<string | undefined>(
+    filterParams && filterParams.genre ? filterParams.genre : undefined
+  );
+  const [studio, setStudio] = useState<string | undefined>(
+    filterParams && filterParams.studio ? filterParams.studio : undefined
+  );
+  const [language, setLanguage] = useState<string | undefined>(
+    filterParams && filterParams.language ? filterParams.language : undefined
+  );
+  const [color, setColor] = useState<string>(
+    filterParams && filterParams.color ? filterParams.color : 'both'
+  );
+  const [director, setDirector] = useState<string | undefined>(
+    filterParams && filterParams.director ? filterParams.director : undefined
+  );
+  const [rating, setRating] = useState<string | undefined>(
+    filterParams && filterParams.rating ? filterParams.rating : undefined
+  );
   const [releaseYear, setReleaseYear] = useState<number[]>([
-    sortedByReleaseYearMovies.length > 0 ? sortedByReleaseYearMovies[0].ReleaseYear : 0,
-    sortedByReleaseYearMovies.length > 0
-      ? sortedByReleaseYearMovies[sortedByReleaseYearMovies.length - 1].ReleaseYear
-      : 0
+    filterParams && filterParams.releaseYear
+      ? filterParams.releaseYear[0]
+      : sortedByReleaseYearMovies.length > 0
+        ? sortedByReleaseYearMovies[0].ReleaseYear
+        : 0,
+    filterParams && filterParams.releaseYear
+      ? filterParams.releaseYear[1]
+      : sortedByReleaseYearMovies.length > 0
+        ? sortedByReleaseYearMovies[sortedByReleaseYearMovies.length - 1].ReleaseYear
+        : 0
   ]);
   const [runtime, setRuntime] = useState<number[]>([
-    sortedByRuntimeMovies.length > 0 ? sortedByRuntimeMovies[0].Runtime : 0,
-    sortedByRuntimeMovies.length > 0
-      ? sortedByRuntimeMovies[sortedByRuntimeMovies.length - 1].Runtime
-      : 0
+    filterParams && filterParams.runtime
+      ? filterParams.runtime[0]
+      : sortedByRuntimeMovies.length > 0
+        ? sortedByRuntimeMovies[0].Runtime
+        : 0,
+    filterParams && filterParams.runtime
+      ? filterParams.runtime[1]
+      : sortedByRuntimeMovies.length > 0
+        ? sortedByRuntimeMovies[sortedByRuntimeMovies.length - 1].Runtime
+        : 0
   ]);
 
   const releaseYearMarks =
@@ -98,10 +126,28 @@ export function FilterModal({
           />
           <TextField
             className="AddMovieField"
-            label="Director"
+            label="Director(s)"
             id="director"
             value={director ? director : ''}
             onChange={handleChange}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <Tooltip
+                    title={
+                      <>
+                        For proper application behavior, please seperate multiple directors with a
+                        comma, e.g., Coen, Kubrick
+                      </>
+                    }
+                  >
+                    <InputAdornment position="end">
+                      <HelpOutline />
+                    </InputAdornment>
+                  </Tooltip>
+                )
+              }
+            }}
           />
           <TextField
             className="AddMovieField"
@@ -115,7 +161,7 @@ export function FilterModal({
                   <Tooltip
                     title={
                       <>
-                        For proper application behavior, please seperate muiltiple languages with a
+                        For proper application behavior, please seperate multiple languages with a
                         comma, e.g., English, Spanish
                       </>
                     }
@@ -149,7 +195,7 @@ export function FilterModal({
                   <Tooltip
                     title={
                       <>
-                        For proper application behavior, please seperate muiltiple genres with a
+                        For proper application behavior, please seperate multiple genres with a
                         comma, e.g., Horror, Comedy
                       </>
                     }

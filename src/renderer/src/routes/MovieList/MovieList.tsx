@@ -54,14 +54,14 @@ export function MovieList() {
   const handleFilter = (params: FilterParams) => {
     setFilterParams(params);
     setFilterOpen(false);
-    const currentFilterPills: { value: string; field: string }[] = [];
-    let filteredMovieList = [...movieList];
+    let currentFilterPills: { value: string; field: string }[] = [];
+    let appliedFilters: { (movie: Movie) }[] = [];
     Object.keys(params).forEach((filter) => {
       switch (filter) {
         case 'title':
           if (params[filter]) {
             currentFilterPills.push({ value: `Title: ${params[filter]}`, field: filter });
-            filteredMovieList = filteredMovieList.filter((movie) => {
+            appliedFilters.push((movie: Movie) => {
               return movie.Title.toLowerCase().includes(params[filter]?.toLowerCase() || '');
             });
           }
@@ -69,7 +69,7 @@ export function MovieList() {
         case 'genre':
           if (params[filter]) {
             currentFilterPills.push({ value: `Genre(s): ${params[filter]}`, field: filter });
-            filteredMovieList = filteredMovieList.filter((movie) => {
+            appliedFilters.push((movie) => {
               return (
                 movie.Genre &&
                 params[filter]
@@ -85,26 +85,58 @@ export function MovieList() {
               value: `Color: ${params[filter] === 'bw' ? 'Black & White' : 'Color'}`,
               field: filter
             });
+            const translatedColor = params[filter] === 'bw' ? false : true;
+            appliedFilters.push((movie: Movie) => {
+              return translatedColor === Boolean(movie.Color);
+            });
           }
           break;
         case 'studio':
           if (params[filter]) {
             currentFilterPills.push({ value: `Studio: ${params[filter]}`, field: filter });
+            appliedFilters.push((movie: Movie) => {
+              return (
+                movie.Studio &&
+                movie.Studio.toLowerCase().includes(params[filter]?.toLowerCase() || '')
+              );
+            });
           }
           break;
         case 'language':
           if (params[filter]) {
             currentFilterPills.push({ value: `Language(s): ${params[filter]}`, field: filter });
+            appliedFilters.push((movie) => {
+              return (
+                movie.Language &&
+                params[filter]
+                  ?.split(',')
+                  .some((el) => movie.Language.toLowerCase().includes(el.toLowerCase().trim()))
+              );
+            });
           }
           break;
         case 'director':
           if (params[filter]) {
             currentFilterPills.push({ value: `Director: ${params[filter]}`, field: filter });
+            appliedFilters.push((movie: Movie) => {
+              return (
+                movie.Director &&
+                params[filter]
+                  ?.split(',')
+                  .some((el) => movie.Director.toLowerCase().includes(el.toLowerCase().trim()))
+              );
+            });
           }
           break;
         case 'rating':
           if (params[filter]) {
             currentFilterPills.push({ value: `Rating: ${params[filter]}`, field: filter });
+            appliedFilters.push((movie: Movie) => {
+              return (
+                movie.Rating &&
+                movie.Rating.toLowerCase().includes(params[filter]?.toLowerCase() || '')
+              );
+            });
           }
           break;
         case 'releaseYear':
@@ -117,6 +149,14 @@ export function MovieList() {
             currentFilterPills.push({
               value: `Release Year: ${params[filter][0]}-${params[filter][1]}`,
               field: filter
+            });
+            appliedFilters.push((movie: Movie) => {
+              return (
+                movie.ReleaseYear &&
+                params[filter] &&
+                movie.ReleaseYear >= params[filter][0] &&
+                movie.ReleaseYear <= params[filter][1]
+              );
             });
           }
           break;
@@ -131,12 +171,20 @@ export function MovieList() {
               value: `Runtime: ${params[filter][0]}-${params[filter][1]} mins.`,
               field: filter
             });
+            appliedFilters.push((movie: Movie) => {
+              return (
+                movie.Runtime &&
+                params[filter] &&
+                movie.Runtime >= params[filter][0] &&
+                movie.Runtime <= params[filter][1]
+              );
+            });
           }
           break;
       }
     });
     setFilterPills(currentFilterPills);
-    setFilteredList(filteredMovieList);
+    setFilteredList([...movieList].filter(combineFilters(...appliedFilters)));
   };
 
   const handleFilterDelete = (filter: { value: string; field: string }) => {
@@ -144,16 +192,27 @@ export function MovieList() {
       let tempFilters = [...filterPills];
       const filteredArr = tempFilters.filter((tempFilter) => tempFilter.value !== filter.value);
       const tempParams = JSON.parse(JSON.stringify(filterParams));
-      tempParams[filter.field] = undefined;
+      if (filter.field !== 'color') {
+        tempParams[filter.field] = undefined;
+      } else {
+        tempParams[filter.field] = 'both';
+      }
       handleFilter(tempParams);
       setFilterPills(filteredArr);
     }
   };
 
+  const combineFilters =
+    (...filters) =>
+    (item) => {
+      return filters.map((filter) => filter(item)).every((x) => x === true);
+    };
+
   return (
     <>
       {filterOpen && (
         <FilterModal
+          filterParams={filterParams}
           open={filterOpen}
           handleFilterSubmit={handleFilter}
           handleClose={() => setFilterOpen(!filterOpen)}
