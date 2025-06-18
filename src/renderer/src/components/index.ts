@@ -6,3 +6,4 @@ export { DeleteModal } from './DeleteModal/DeleteModal';
 export { Footer } from './Footer/Footer';
 export { FilterModal } from './FilterModal/FilterModal';
 export { RangeSlider } from './RangeSlider/RangeSlider';
+export { PosterModal } from './PosterModal/PosterModal';
