@@ -1,0 +1,26 @@
+.RecommendInfo {
+  margin-top: 10px;
+  display: inline-block;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.RecommendationHeader {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.RecommendationPoster {
+  border: 3px solid white;
+  border-radius: 15px;
+}
+
+.Recommendations {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  color: white;
+  font-size: 20px;
+  flex-wrap: wrap;
+}

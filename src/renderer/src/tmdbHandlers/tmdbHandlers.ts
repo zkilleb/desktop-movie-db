@@ -27,3 +27,16 @@ export async function getTMDBMovieIdByKeyword(keyword: string, year: number) {
     return {};
   }
 }
+
+export async function getTMDBRecommendations(id: string) {
+  try {
+    const result = await axios.get(
+      `${BASE_URL}/movie/${id}/recommendations`,
+      generateTMDBParams({ id }, localStorage.getItem('tmdbApi'))
+    );
+    return [...result.data.results.splice(0, 8)];
+  } catch (e) {
+    console.log(e);
+    return [];
+  }
+}

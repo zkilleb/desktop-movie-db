@@ -2,13 +2,18 @@ import { Movie, TMDBResult } from '@renderer/types';
 import './MovieDetail.css';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getTMDBMovieIdByKeyword } from '@renderer/tmdbHandlers/tmdbHandlers';
+import {
+  getTMDBMovieIdByKeyword,
+  getTMDBRecommendations
+} from '@renderer/tmdbHandlers/tmdbHandlers';
 import { Delete, Edit } from '@mui/icons-material';
-import { DeleteModal, PosterModal } from '@renderer/components';
+import { DeleteModal, PosterModal, Recommendations } from '@renderer/components';
+import { Recommendation } from '@renderer/types/Recommendation';
 
 export function MovieDetail() {
   const [movieData, setMovieData] = useState<Movie>();
   const [tmdbData, setTmdbData] = useState<TMDBResult>();
+  const [tmdbRecommendationData, setTmdbRecommendationData] = useState<Recommendation[]>();
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [posterOpen, setPosterOpen] = useState(false);
 
@@ -21,7 +26,9 @@ export function MovieDetail() {
       setMovieData(result[0]);
       if (result && localStorage.getItem('tmdbApi')) {
         const tmdbResult = await getTMDBMovieIdByKeyword(result[0].Title, result[0].ReleaseYear);
+        const tmdbRecommendations = await getTMDBRecommendations(tmdbResult.id);
         setTmdbData(tmdbResult);
+        setTmdbRecommendationData(tmdbRecommendations);
       }
     };
 
@@ -89,6 +96,9 @@ export function MovieDetail() {
               <div>Notes: {movieData.Notes}</div>
             </div>
           </div>
+          {tmdbRecommendationData && tmdbRecommendationData.length > 0 && (
+            <Recommendations recommendations={tmdbRecommendationData} />
+          )}
         </>
       )}
     </div>
