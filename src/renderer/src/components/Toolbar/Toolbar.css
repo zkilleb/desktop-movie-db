@@ -17,6 +17,12 @@
   justify-content: center;
 }
 
+.ToolbarLink {
+  text-decoration: none;
+  color: white;
+  margin: 10px;
+}
+
 .LeftToolBarContainer {
   margin-left: 5em;
   font-weight: normal;

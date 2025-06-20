@@ -19,8 +19,11 @@ export function Toolbar({ loading }: { loading: boolean }) {
               <div>Movie Database</div>
             </Link>
             <div className="LeftToolBarContainer">
-              <Link className="HomeLink" to="/movies">
+              <Link className="ToolbarLink" to="/movies">
                 Movies
+              </Link>
+              <Link className="ToolbarLink" to="/stats">
+                Stats
               </Link>
             </div>
             <div className="RightToolBarContainer">

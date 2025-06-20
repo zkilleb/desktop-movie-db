@@ -1,0 +1,19 @@
+.StatHeader {
+  font-size: 25px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.StatContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.ChartContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}

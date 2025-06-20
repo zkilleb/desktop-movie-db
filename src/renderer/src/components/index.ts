@@ -8,3 +8,4 @@ export { FilterModal } from './FilterModal/FilterModal';
 export { RangeSlider } from './RangeSlider/RangeSlider';
 export { PosterModal } from './PosterModal/PosterModal';
 export { Recommendations } from './Recommendations/Recommendations';
+export { ByGenreChart } from './ByGenreChart/ByGenreChart';

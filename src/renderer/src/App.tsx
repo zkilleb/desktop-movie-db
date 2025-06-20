@@ -4,7 +4,7 @@ import { ThemeProvider } from '@mui/material';
 import { darkTheme } from './themes';
 import { Toolbar, Notification, Footer } from './components';
 import { Validation } from './types';
-import { Home, AddMovie, MovieList, MovieDetail } from './routes';
+import { Home, AddMovie, MovieList, MovieDetail, Stats } from './routes';
 
 function App(): JSX.Element {
   const [validation, setValidation] = useState<Validation>();
@@ -51,6 +51,7 @@ function App(): JSX.Element {
           <Route path="/add" element={<AddMovie />} />
           <Route path="/movies" element={<MovieList />} />
           <Route path="/movie/:id" element={<MovieDetail />} />
+          <Route path="/stats" element={<Stats />} />
         </Routes>
         <Footer />
       </HashRouter>
