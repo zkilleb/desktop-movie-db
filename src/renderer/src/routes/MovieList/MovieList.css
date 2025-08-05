@@ -29,3 +29,7 @@
 .FilterContainer {
   display: flex;
 }
+
+.ExportIcon {
+  margin-right: 10px;
+}

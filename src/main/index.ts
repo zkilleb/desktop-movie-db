@@ -11,6 +11,7 @@ import {
   movieDBEmptyCheck
 } from './sqlite3';
 import { updateUserConfig, getUserConfig } from './userConfig';
+import { exportCsv, openCsv } from './fileHandlers';
 
 let mainWindow: BrowserWindow | null;
 
@@ -95,6 +96,16 @@ app.whenReady().then(() => {
 
 ipcMain.handle('add-movie', async (event, args) => {
   const result = await addMovie(args);
+  return result;
+});
+
+ipcMain.handle('export-csv', async (event, args) => {
+  const result = await exportCsv(args);
+  return result;
+});
+
+ipcMain.handle('open-csv', async (event, args) => {
+  const result = await openCsv(args);
   return result;
 });
 

@@ -9,11 +9,12 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Chip
+  Chip,
+  Tooltip
 } from '@mui/material';
-import { Delete, FilterAlt } from '@mui/icons-material';
-import { FilterParams, Movie } from '../../types';
-import { DeleteModal } from '@renderer/components';
+import { Delete, FilterAlt, FileDownload } from '@mui/icons-material';
+import { FilterParams, Movie, Validation } from '../../types';
+import { DeleteModal, Notification } from '@renderer/components';
 import { FilterModal } from '@renderer/components/FilterModal/FilterModal';
 
 export function MovieList() {
@@ -25,6 +26,9 @@ export function MovieList() {
   const [tempDeleteTitle, setTempDeleteTitle] = useState<string>();
   const [filterParams, setFilterParams] = useState<FilterParams>();
   const [filterPills, setFilterPills] = useState<{ value: string; field: string }[]>();
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [exportDialogContent, setExportDialogContent] = useState<Validation>();
+  const [exportFileName, setExportFileName] = useState<string>();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -208,8 +212,68 @@ export function MovieList() {
       return filters.map((filter) => filter(item)).every((x) => x === true);
     };
 
+  const exportMovieListCsv = async () => {
+    setExportDialogOpen(false);
+    setExportDialogContent(undefined);
+    try {
+      const date = new Date(Date.now());
+      const filename = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}-Movie-List-Export.csv`;
+      const response = await window.electron.ipcRenderer.invoke('export-csv', {
+        filename,
+        filecontents: formatMovieListFileContents()
+      });
+      setExportDialogOpen(true);
+      if (response) {
+        setExportFileName(filename);
+        setExportDialogContent({ message: `${filename} succesfully written`, severity: 'success' });
+      } else {
+        setExportDialogContent({ message: `Problem writing ${filename}`, severity: 'error' });
+      }
+    } catch (e: any) {
+      console.error(e.message);
+    }
+  };
+
+  const formatMovieListFileContents = () => {
+    let tempString = '';
+    const trimmedColumn = COLUMN_TITLES.slice(0, COLUMN_TITLES.length - 1);
+    trimmedColumn.forEach((column) => (tempString += `${column},`));
+    tempString += '\n';
+    movieList.forEach((movie) => {
+      trimmedColumn.forEach((column) => {
+        const rawColumn = movie[column.replaceAll(' ', '')];
+        if (rawColumn !== null) {
+          if (column === 'Color') {
+            tempString += rawColumn ? 'Color, ' : 'B/W, ';
+          } else {
+            tempString += `${rawColumn.toString().replaceAll(', ', '/')},`;
+          }
+        } else {
+          tempString += ',';
+        }
+      });
+      tempString += '\n';
+    });
+
+    return tempString;
+  };
+
   return (
     <>
+      {exportDialogContent && exportDialogOpen && (
+        <Notification
+          message={exportDialogContent.message}
+          severity={exportDialogContent.severity}
+          open={!!exportDialogContent}
+          onClick={() =>
+            window.electron.ipcRenderer.invoke('open-csv', { filename: exportFileName })
+          }
+          handleClose={() => {
+            setExportDialogOpen(false);
+            setExportDialogContent(undefined);
+          }}
+        />
+      )}
       {filterOpen && (
         <FilterModal
           filterParams={filterParams}
@@ -251,7 +315,14 @@ export function MovieList() {
           </div>
           {movieList.length > 0 && (
             <div className="FilterSubHeader">
-              <FilterAlt onClick={() => setFilterOpen(!filterOpen)} />
+              <Tooltip title="Export CSV">
+                <div className="ExportIcon">
+                  <FileDownload onClick={() => exportMovieListCsv()} />
+                </div>
+              </Tooltip>
+              <Tooltip title="Filter">
+                <FilterAlt onClick={() => setFilterOpen(!filterOpen)} />
+              </Tooltip>
             </div>
           )}
         </div>
