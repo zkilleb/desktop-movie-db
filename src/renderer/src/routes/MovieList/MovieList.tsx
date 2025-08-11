@@ -7,6 +7,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  TableSortLabel,
   TableRow,
   Paper,
   Chip,
@@ -29,6 +30,8 @@ export function MovieList() {
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [exportDialogContent, setExportDialogContent] = useState<Validation>();
   const [exportFileName, setExportFileName] = useState<string>();
+  const [orderBy, setOrderBy] = useState<string>();
+  const [order, setOrder] = useState<Order>('desc');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -258,6 +261,51 @@ export function MovieList() {
     return tempString;
   };
 
+  const handleSort = (column: string) => {
+    let tempOrder = order;
+    if (column === orderBy) {
+      tempOrder = order === 'asc' ? 'desc' : 'asc';
+    } else {
+      setOrderBy(column);
+      tempOrder = 'asc';
+    }
+
+    setOrder(tempOrder);
+
+    let tempFilteredList = [...filterdList];
+
+    tempFilteredList.sort((a, b) => {
+      const formattedStringA = a[column.replaceAll(' ', '')];
+      const formattedStringB = b[column.replaceAll(' ', '')];
+
+      if (formattedStringA === formattedStringB) {
+        return 0;
+      }
+
+      if (tempOrder === 'asc') {
+        if (formattedStringA === null && formattedStringB !== null) return 1;
+        if (formattedStringA !== null && formattedStringB === null) return -1;
+
+        if (formattedStringA < formattedStringB) {
+          return -1;
+        } else {
+          return 1;
+        }
+      } else {
+        if (formattedStringA === null && formattedStringB !== null) return -1;
+        if (formattedStringA !== null && formattedStringB === null) return 1;
+
+        if (formattedStringA > formattedStringB) {
+          return -1;
+        } else {
+          return 1;
+        }
+      }
+    });
+
+    setFilteredList(tempFilteredList);
+  };
+
   return (
     <>
       {exportDialogContent && exportDialogOpen && (
@@ -330,7 +378,17 @@ export function MovieList() {
           <TableHead>
             <TableRow>
               {COLUMN_TITLES.map((column) => {
-                return <TableCell align="center">{column}</TableCell>;
+                return (
+                  <TableCell align="center">
+                    <TableSortLabel
+                      onClick={() => handleSort(column)}
+                      active={orderBy === column}
+                      direction={order === 'asc' ? 'desc' : 'asc'}
+                    >
+                      {column}
+                    </TableSortLabel>
+                  </TableCell>
+                );
               })}
             </TableRow>
           </TableHead>
@@ -386,3 +444,5 @@ const COLUMN_TITLES = [
   'Genre',
   ''
 ];
+
+type Order = 'asc' | 'desc';
