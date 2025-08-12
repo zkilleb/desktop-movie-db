@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import './MovieList.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   Table,
   TableBody,
@@ -15,12 +15,18 @@ import {
 } from '@mui/material';
 import { Delete, FilterAlt, FileDownload } from '@mui/icons-material';
 import { FilterParams, Movie, Validation } from '../../types';
-import { DeleteModal, Notification } from '@renderer/components';
-import { FilterModal } from '@renderer/components/FilterModal/FilterModal';
+import { MOVIE_LIST_COLUMN_TITLES, Order } from '../../constants';
+import {
+  DeleteModal,
+  EmptyDBTableRow,
+  Notification,
+  FilterModal,
+  TablePagination
+} from '@renderer/components';
 
 export function MovieList() {
   const [movieList, setMovieList] = useState<Movie[]>([]);
-  const [filterdList, setFilteredList] = useState<Movie[]>(movieList);
+  const [filteredList, setFilteredList] = useState<Movie[]>(movieList);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [tempDeleteId, setTempDeleteId] = useState<string>();
@@ -31,7 +37,9 @@ export function MovieList() {
   const [exportDialogContent, setExportDialogContent] = useState<Validation>();
   const [exportFileName, setExportFileName] = useState<string>();
   const [orderBy, setOrderBy] = useState<string>();
-  const [order, setOrder] = useState<Order>('desc');
+  const [order, setOrder] = useState<Order>('asc');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -239,7 +247,7 @@ export function MovieList() {
 
   const formatMovieListFileContents = () => {
     let tempString = '';
-    const trimmedColumn = COLUMN_TITLES.slice(0, COLUMN_TITLES.length - 1);
+    const trimmedColumn = MOVIE_LIST_COLUMN_TITLES.slice(0, MOVIE_LIST_COLUMN_TITLES.length - 1);
     trimmedColumn.forEach((column) => (tempString += `${column},`));
     tempString += '\n';
     movieList.forEach((movie) => {
@@ -272,7 +280,7 @@ export function MovieList() {
 
     setOrder(tempOrder);
 
-    let tempFilteredList = [...filterdList];
+    let tempFilteredList = [...filteredList];
 
     tempFilteredList.sort((a, b) => {
       const formattedStringA = a[column.replaceAll(' ', '')];
@@ -305,6 +313,20 @@ export function MovieList() {
 
     setFilteredList(tempFilteredList);
   };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const visibleRows = useMemo(
+    () => [...filteredList].slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [filteredList, order, orderBy, page, rowsPerPage]
+  );
 
   return (
     <>
@@ -377,7 +399,7 @@ export function MovieList() {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              {COLUMN_TITLES.map((column) => {
+              {MOVIE_LIST_COLUMN_TITLES.map((column) => {
                 return (
                   <TableCell align="center">
                     <TableSortLabel
@@ -393,8 +415,8 @@ export function MovieList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filterdList.length > 0 ? (
-              filterdList.map((movie) => {
+            {filteredList.length > 0 ? (
+              visibleRows.map((movie) => {
                 return (
                   <TableRow key={movie.ID} onDoubleClick={() => navigate(`/movie/${movie.ID}`)}>
                     <TableCell align="center">{movie.Title}</TableCell>
@@ -416,33 +438,18 @@ export function MovieList() {
                 );
               })
             ) : (
-              <TableRow>
-                <TableCell colSpan={10}>
-                  <div className="EmptyMovieList">No movies currently in database.</div>
-                  <Link to="/add" className="EmptyMovieList">
-                    Click Here To Add One
-                  </Link>
-                </TableCell>
-              </TableRow>
+              <EmptyDBTableRow colSpan={10} cellText="No movies currently in database." />
             )}
           </TableBody>
         </Table>
+        <TablePagination
+          count={filteredList.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </TableContainer>
     </>
   );
 }
-
-const COLUMN_TITLES = [
-  'Title',
-  'Director',
-  'Release Year',
-  'Runtime',
-  'Rating',
-  'Color',
-  'Language',
-  'Studio',
-  'Genre',
-  ''
-];
-
-type Order = 'asc' | 'desc';

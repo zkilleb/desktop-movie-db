@@ -8,5 +8,11 @@ export { FilterModal } from './FilterModal/FilterModal';
 export { RangeSlider } from './RangeSlider/RangeSlider';
 export { PosterModal } from './PosterModal/PosterModal';
 export { Recommendations } from './Recommendations/Recommendations';
-export { ByGenreChart } from './ByGenreChart/ByGenreChart';
-export { ByColorChart } from './ByColorChart/ByColorChart';
+
+// Stat Components
+export { ByGenreChart } from './Stats/ByGenreChart/ByGenreChart';
+export { ByColorChart } from './Stats/ByColorChart/ByColorChart';
+
+// Table Components
+export { EmptyDBTableRow } from './Tables/EmptyDBTableRow/EmptyDBTableRow';
+export { TablePagination } from './Tables/TablePagination/TablePagination';
