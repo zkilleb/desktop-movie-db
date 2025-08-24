@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { app } from 'electron';
+import { app, dialog } from 'electron';
 import path from 'node:path';
 import { shell } from 'electron';
 
@@ -17,4 +17,12 @@ export function exportCsv({ filename, filecontents }: { filename: string; fileco
 export function openCsv({ filename }: { filename: string }) {
   const DOWNLOAD_PATH = path.join(app.getPath('downloads'), filename);
   shell.openPath(DOWNLOAD_PATH);
+}
+
+export async function selectImportCsvFile() {
+  const result = await dialog.showOpenDialog({
+    properties: ['openFile'],
+    filters: [{ name: 'CSV', extensions: ['csv'] }]
+  });
+  return { status: 200, filename: result.filePaths[0] };
 }

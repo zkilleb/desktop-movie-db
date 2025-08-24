@@ -13,7 +13,7 @@ import {
   Chip,
   Tooltip
 } from '@mui/material';
-import { Delete, FilterAlt, FileDownload } from '@mui/icons-material';
+import { Delete, FilterAlt, FileDownload, FileUpload } from '@mui/icons-material';
 import { FilterParams, Movie, Validation } from '../../types';
 import { MOVIE_LIST_COLUMN_TITLES, Order } from '../../constants';
 import {
@@ -21,7 +21,8 @@ import {
   EmptyDBTableRow,
   Notification,
   FilterModal,
-  TablePagination
+  TablePagination,
+  ImportModal
 } from '@renderer/components';
 
 export function MovieList() {
@@ -35,6 +36,7 @@ export function MovieList() {
   const [filterPills, setFilterPills] = useState<{ value: string; field: string }[]>();
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
   const [exportDialogContent, setExportDialogContent] = useState<Validation>();
+  const [importOpen, setImportOpen] = useState<boolean>(false);
   const [exportFileName, setExportFileName] = useState<string>();
   const [orderBy, setOrderBy] = useState<string>();
   const [order, setOrder] = useState<Order>('asc');
@@ -248,7 +250,9 @@ export function MovieList() {
   const formatMovieListFileContents = () => {
     let tempString = '';
     const trimmedColumn = MOVIE_LIST_COLUMN_TITLES.slice(0, MOVIE_LIST_COLUMN_TITLES.length - 1);
-    trimmedColumn.forEach((column) => (tempString += `${column},`));
+    trimmedColumn.forEach(
+      (column, index) => (tempString += `${column}${index < trimmedColumn.length - 1 ? ',' : ''}`)
+    );
     tempString += '\n';
     movieList.forEach((movie) => {
       trimmedColumn.forEach((column) => {
@@ -265,7 +269,6 @@ export function MovieList() {
       });
       tempString += '\n';
     });
-
     return tempString;
   };
 
@@ -344,6 +347,9 @@ export function MovieList() {
           }}
         />
       )}
+      {importOpen && (
+        <ImportModal open={importOpen} handleClose={() => setImportOpen(!importOpen)} />
+      )}
       {filterOpen && (
         <FilterModal
           filterParams={filterParams}
@@ -385,6 +391,11 @@ export function MovieList() {
           </div>
           {movieList.length > 0 && (
             <div className="FilterSubHeader">
+              <Tooltip title="Import CSV">
+                <div className="ExportIcon">
+                  <FileUpload onClick={() => setImportOpen(!importOpen)} />
+                </div>
+              </Tooltip>
               <Tooltip title="Export CSV">
                 <div className="ExportIcon">
                   <FileDownload onClick={() => exportMovieListCsv()} />

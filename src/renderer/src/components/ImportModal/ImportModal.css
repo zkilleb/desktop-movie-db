@@ -1,0 +1,23 @@
+.ImportExplainerText {
+  text-align: center;
+}
+
+.ImportHeaderString {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.FileImport {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  border: 3px solid white;
+  padding: 5px;
+  border-radius: 15px;
+}
+
+.ImportTemplateString {
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: center;
+}
